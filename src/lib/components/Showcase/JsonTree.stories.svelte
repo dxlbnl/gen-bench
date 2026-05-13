@@ -1,7 +1,13 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { userEvent, within, expect } from 'storybook/test';
 	import JsonTree from './JsonTree.svelte';
-	const { Story } = defineMeta({ title: 'Showcase/JsonTree', component: JsonTree });
+
+	const { Story } = defineMeta({
+		title: 'Showcase/JsonTree',
+		component: JsonTree,
+		tags: ['autodocs']
+	});
 
 	const sample = {
 		id: '3f6e1a2b-0000-0000-0000-000000000001',
@@ -20,13 +26,30 @@
 	]);
 </script>
 
-<Story name="Simple object">
+<Story
+	name="Simple object"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await expect(canvas.getByText('"name"')).toBeInTheDocument();
+		await expect(canvas.getByText('"Alice Smith"')).toBeInTheDocument();
+		const collapseBtn = canvas.getByRole('button');
+		await userEvent.click(collapseBtn);
+		await expect(canvas.getByText(/8 keys/)).toBeInTheDocument();
+		await expect(canvas.queryByText('"name"')).not.toBeInTheDocument();
+	}}
+>
 	<div style="padding:24px;font-family:var(--font-mono);font-size:12px">
 		<JsonTree value={sample} />
 	</div>
 </Story>
 
-<Story name="With highlighted IDs">
+<Story
+	name="With highlighted IDs"
+	play={async ({ canvasElement }) => {
+		const highlighted = canvasElement.querySelectorAll('.value.highlight');
+		await expect(highlighted.length).toBe(2);
+	}}
+>
 	<div style="padding:24px;font-family:var(--font-mono);font-size:12px">
 		<JsonTree value={sample} {highlightIds} />
 	</div>

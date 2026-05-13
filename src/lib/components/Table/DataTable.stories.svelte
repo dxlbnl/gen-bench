@@ -1,7 +1,9 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { userEvent, within, expect } from 'storybook/test';
 	import DataTable from './DataTable.svelte';
-	const { Story } = defineMeta({ title: 'Table/DataTable', component: DataTable });
+
+	const { Story } = defineMeta({ title: 'Table/DataTable', component: DataTable, tags: ['autodocs'] });
 
 	const rows = Array.from({ length: 20 }, (_, i) => ({
 		id: `user-${i + 1}`,
@@ -18,13 +20,32 @@
 	];
 </script>
 
-<Story name="20 rows">
+<Story
+	name="20 rows"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const allRows = canvas.getAllByRole('row');
+		await expect(allRows).toHaveLength(21);
+		await userEvent.click(canvas.getByText('Name'));
+		const firstDataRow = canvas.getAllByRole('row')[1];
+		await expect(within(firstDataRow).getByText('Alice Smith')).toBeInTheDocument();
+	}}
+>
 	<div style="max-width:700px;padding:24px">
 		<DataTable {rows} {columns} />
 	</div>
 </Story>
 
-<Story name="Filtered">
+<Story
+	name="Filtered"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		const allRows = canvas.getAllByRole('row');
+		await expect(allRows).toHaveLength(6);
+		const names = canvas.getAllByText('Alice Smith');
+		await expect(names).toHaveLength(5);
+	}}
+>
 	<div style="max-width:700px;padding:24px">
 		<DataTable {rows} {columns} filter="Alice" />
 	</div>

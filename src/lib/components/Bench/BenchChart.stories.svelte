@@ -1,7 +1,13 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { within, expect } from 'storybook/test';
 	import BenchChart from './BenchChart.svelte';
-	const { Story } = defineMeta({ title: 'Bench/BenchChart', component: BenchChart });
+
+	const { Story } = defineMeta({
+		title: 'Bench/BenchChart',
+		component: BenchChart,
+		tags: ['autodocs']
+	});
 
 	const mockResults = [
 		{
@@ -25,13 +31,23 @@
 	];
 </script>
 
-<Story name="With results">
+<Story
+	name="With results"
+	play={async ({ canvasElement }) => {
+		await expect(canvasElement.querySelector('canvas')).toBeInTheDocument();
+	}}
+>
 	<div style="width:600px;padding:24px">
 		<BenchChart results={mockResults} />
 	</div>
 </Story>
 
-<Story name="Empty">
+<Story
+	name="Empty"
+	play={async ({ canvasElement }) => {
+		await expect(canvasElement.querySelector('canvas')).toBeInTheDocument();
+	}}
+>
 	<div style="width:600px;padding:24px">
 		<BenchChart results={mockResults.map(r => ({ ...r, warm: null, cold: null }))} />
 	</div>

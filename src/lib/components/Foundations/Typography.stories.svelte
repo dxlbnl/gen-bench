@@ -1,9 +1,20 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	const { Story } = defineMeta({ title: 'Foundations/Typography' });
+	import { within, expect } from 'storybook/test';
+
+	const { Story } = defineMeta({ title: 'Foundations/Typography', tags: ['autodocs'] });
 </script>
 
-<Story name="Scale">
+<Story
+	name="Scale"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await expect(canvas.getByText('t-large — Benchmark Results')).toBeInTheDocument();
+		await expect(canvas.getByText('t-mono — 42 000 ops/sec')).toBeInTheDocument();
+		await expect(canvasElement.querySelector('.t-large')).toBeInTheDocument();
+		await expect(canvasElement.querySelector('.t-mono')).toBeInTheDocument();
+	}}
+>
 	<div style="display:flex;flex-direction:column;gap:16px;padding:24px">
 		<p class="t-large">t-large — Benchmark Results</p>
 		<p class="t-title">t-title — Library Comparison</p>

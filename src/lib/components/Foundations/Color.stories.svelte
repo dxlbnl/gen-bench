@@ -1,9 +1,19 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	const { Story } = defineMeta({ title: 'Foundations/Color' });
+	import { within, expect } from 'storybook/test';
+
+	const { Story } = defineMeta({ title: 'Foundations/Color', tags: ['autodocs'] });
 </script>
 
-<Story name="Palette">
+<Story
+	name="Palette"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await expect(canvas.getByText('Accent')).toBeInTheDocument();
+		await expect(canvas.getByText('zod4-mock')).toBeInTheDocument();
+		await expect(canvas.getByText('--accent')).toBeInTheDocument();
+	}}
+>
 	<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;padding:16px">
 		{#each [
 			['--bg-base','Base'],['--bg-raised','Raised'],['--bg-overlay','Overlay'],

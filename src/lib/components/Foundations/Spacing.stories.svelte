@@ -1,9 +1,20 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	const { Story } = defineMeta({ title: 'Foundations/Spacing' });
+	import { within, expect } from 'storybook/test';
+
+	const { Story } = defineMeta({ title: 'Foundations/Spacing', tags: ['autodocs'] });
 </script>
 
-<Story name="Scale">
+<Story
+	name="Scale"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await expect(canvas.getByText('4px')).toBeInTheDocument();
+		await expect(canvas.getByText('48px')).toBeInTheDocument();
+		await expect(canvas.getByText('--space-1')).toBeInTheDocument();
+		await expect(canvas.getByText('--space-8')).toBeInTheDocument();
+	}}
+>
 	<div style="display:flex;flex-direction:column;gap:8px;padding:24px">
 		{#each [
 			['--space-1','4px'],['--space-2','8px'],['--space-3','12px'],

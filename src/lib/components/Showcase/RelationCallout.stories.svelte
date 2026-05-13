@@ -1,7 +1,13 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { within, expect } from 'storybook/test';
 	import RelationCallout from './RelationCallout.svelte';
-	const { Story } = defineMeta({ title: 'Showcase/RelationCallout', component: RelationCallout });
+
+	const { Story } = defineMeta({
+		title: 'Showcase/RelationCallout',
+		component: RelationCallout,
+		tags: ['autodocs']
+	});
 
 	const proofs = [
 		{
@@ -22,7 +28,18 @@
 	];
 </script>
 
-<Story name="Default">
+<Story
+	name="Default"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await expect(canvas.getByText('review.userId')).toBeInTheDocument();
+		await expect(canvas.getByText('review.productId')).toBeInTheDocument();
+		await expect(canvas.getAllByText('User #3')).toHaveLength(2);
+		await expect(canvas.getByText('Product #7')).toBeInTheDocument();
+		const checks = canvas.getAllByText('✓');
+		await expect(checks).toHaveLength(3);
+	}}
+>
 	<div style="max-width:480px;padding:24px">
 		<RelationCallout {proofs} />
 	</div>

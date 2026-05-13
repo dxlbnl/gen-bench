@@ -1,7 +1,13 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
+	import { within, expect } from 'storybook/test';
 	import FeatureMatrix from './FeatureMatrix.svelte';
-	const { Story } = defineMeta({ title: 'Surfaces/FeatureMatrix', component: FeatureMatrix });
+
+	const { Story } = defineMeta({
+		title: 'Surfaces/FeatureMatrix',
+		component: FeatureMatrix,
+		tags: ['autodocs']
+	});
 
 	type CV = 'yes' | 'no' | 'partial' | 'na';
 	const features: { label: string; zod4mock: CV; zodmock: CV; faker: CV }[] = [
@@ -15,7 +21,19 @@
 	];
 </script>
 
-<Story name="Full matrix">
+<Story
+	name="Full matrix"
+	play={async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+		await expect(canvas.getByText('Zod v4 schemas')).toBeInTheDocument();
+		await expect(canvas.getByText('zod4-mock')).toBeInTheDocument();
+		const checkmarks = canvas.getAllByText('✓');
+		await expect(checkmarks.length).toBeGreaterThan(0);
+		const crosses = canvas.getAllByText('✗');
+		await expect(crosses.length).toBeGreaterThan(0);
+		await expect(canvas.getByText('~')).toBeInTheDocument();
+	}}
+>
 	<div style="max-width:600px;padding:24px">
 		<FeatureMatrix {features} />
 	</div>
