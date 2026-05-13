@@ -13,6 +13,7 @@
 	<nav class="topbar">
 		<a href="/" class="brand t-label">gen-bench</a>
 		<div class="links">
+			<a href="/docs" class="t-small">Docs</a>
 			<a href="/bench" class="t-small">Bench</a>
 			<a href="/showcase" class="t-small">Showcase</a>
 			<a href="/table" class="t-small">Table</a>
