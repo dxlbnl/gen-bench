@@ -15,9 +15,13 @@ import {
 
 export function generateWorld(seed?: number): EcommerceWorld {
 	const users: User[] = Array.from({ length: 10 }, () => generate(userSchema, { seed }));
-	const categories: Category[] = Array.from({ length: 5 }, (_, i) =>
+	const categoriesRaw: Category[] = Array.from({ length: 5 }, (_, i) =>
 		generate(categorySchema, { seed: seed != null ? seed + i : undefined })
-	).map((c, i) => ({ ...c, parentId: i > 2 ? categories[i - 3].id : null }));
+	);
+	const categories: Category[] = categoriesRaw.map((c, i) => ({
+		...c,
+		parentId: i > 2 ? categoriesRaw[i - 3].id : null
+	}));
 
 	const products: Product[] = Array.from({ length: 20 }, (_, i) =>
 		generate(productSchema, { seed: seed != null ? seed + 100 + i : undefined })
