@@ -13,6 +13,14 @@
 
 	Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
+	function resolveColor(color: string): string {
+		if (color.startsWith('var(--')) {
+			const prop = color.slice(4, -1);
+			return getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
+		}
+		return color;
+	}
+
 	interface LibResult {
 		label: string;
 		color: string;
@@ -34,8 +42,8 @@
 				r.warm ? Math.round(r.warm.opsPerSec) : 0,
 				r.cold != null ? Math.round(r.cold) : 0
 			],
-			backgroundColor: r.color + 'cc',
-			borderColor: r.color,
+			backgroundColor: resolveColor(r.color) + 'cc',
+			borderColor: resolveColor(r.color),
 			borderWidth: 1,
 			borderRadius: 4
 		}))
