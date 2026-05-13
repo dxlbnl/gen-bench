@@ -1,12 +1,14 @@
 import { generateMock } from '@anatine/zod-mock';
+import type { ZodTypeAny } from 'zod';
 import { flatSchema3 } from '../schemas/flat';
 import { nestedSchema3 } from '../schemas/nested';
 import { arraySchema3 } from '../schemas/array';
 
 type SchemaKey = 'flat' | 'nested' | 'array';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const g = generateMock as (schema: any) => unknown;
+// zod3 schemas are structurally identical to zod4's ZodTypeAny at the call site;
+// the peer mismatch is a package-resolution artifact, not a runtime issue.
+const g = (schema: unknown) => generateMock(schema as ZodTypeAny);
 const generators: Record<SchemaKey, () => unknown> = {
 	flat: () => g(flatSchema3),
 	nested: () => g(nestedSchema3),

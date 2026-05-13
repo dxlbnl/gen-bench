@@ -4,7 +4,7 @@ import { runZodMock } from './zodmock';
 import { runFaker } from './faker';
 import { flatSchema, flatSchema3 } from '../schemas/flat';
 import { nestedSchema, nestedSchema3 } from '../schemas/nested';
-import { arraySchema, arraySchema3 } from '../schemas/array';
+import { arraySchema } from '../schemas/array';
 
 describe('zod4mock runner', () => {
 	it('generates a flat record matching the schema', () => {

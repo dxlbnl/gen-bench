@@ -8,6 +8,7 @@
 		Tooltip,
 		Legend
 	} from 'chart.js';
+	import type { TooltipItem } from 'chart.js';
 	import type { BenchResult } from '$lib/bench';
 
 	Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
@@ -50,11 +51,10 @@
 			},
 			tooltip: {
 				callbacks: {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					label: (ctx: any) => {
-						const isWarm = (ctx.dataIndex as number) === 0;
-						const val = ctx.parsed.x as number;
-						const libLabel = (ctx.dataset.label as string | undefined) ?? '';
+					label: (ctx: TooltipItem<'bar'>) => {
+						const isWarm = ctx.dataIndex === 0;
+						const val = ctx.parsed.x ?? 0;
+						const libLabel = ctx.dataset.label ?? '';
 						return `${libLabel}: ${isWarm ? `${val.toLocaleString()} ops/sec` : `${val}ms`}`;
 					}
 				}
